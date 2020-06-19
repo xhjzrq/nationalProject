@@ -1,0 +1,615 @@
+<!DOCTYPE html>
+<html class="x-admin-sm">
+<head>
+    <meta charset="UTF-8">
+    <title>管子智能套料软件</title>
+    <meta name="renderer" content="webkit">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <meta name="viewport" content="width=device-width,user-scalable=yes, minimum-scale=0.4, initial-scale=0.8,target-densitydpi=low-dpi" />
+    <link rel="stylesheet" href="./css/font.css">
+    <link rel="stylesheet" href="./css/xadmin.css">
+    <script src="./lib/layui/layui.js" charset="utf-8"></script>
+    <script type="text/javascript" src="./js/xadmin.js"></script>
+    <script type="text/javascript" src="./js/common.js"> </script>
+    <script type="text/javascript" src="./js/jquery-3.3.1.min.js"></script>
+    <!--[if lt IE 9]>
+    <script src="https://cdn.staticfile.org/html5shiv/r29/html5.min.js"></script>
+    <script src="https://cdn.staticfile.org/respond.js/1.4.2/respond.min.js"></script>
+    <![endif]-->
+
+    <style>
+        .layui-table td,.layui-table th {
+            min-width: 30px;
+
+        }
+        .x-admin-sm .layui-table td, .x-admin-sm .layui-table th{
+            font-size: 10px;
+        }
+        .layui-table td, .layui-table th {
+            position: relative;
+            padding: 5px 10px;
+            min-height: 20px;
+            line-height: 20px;
+            font-size: 14px;
+        }
+        .layui-table th {
+            text-align: center;
+            font-weight: bold;
+
+        }
+
+        .layui-card {
+             float: left;
+             width: 50%;
+             /*height: 40%;*/
+             word-wrap: break-word;
+             margin-bottom: 15px;
+             border-radius: 2px;
+             background-color: #fff;
+             box-shadow: 0 1px 2px 0 rgba(0,0,0,.05);
+         }
+        .layui-card1 {
+
+            margin-bottom: 15px;
+            border-radius: 2px;
+            background-color: #fff;
+            box-shadow: 0 1px 2px 0 rgba(0,0,0,.05);
+        }
+    </style>
+</head>
+<body>
+<div class="x-nav">
+    <form class="layui-form layui-col-space5">
+        <label class="layui-form-label1">
+            下料设备</label>
+        <div class="layui-inline layui-show-xs-block">
+            <input type="text" id="DeviceNo1" name="DeviceNo"  placeholder="请输入下料设备" autocomplete="off" class="layui-input">
+        </div>
+        <label class="layui-form-label1">
+            切缝宽度:</label>
+        <div class="layui-inline layui-show-xs-block">
+            <input type="text" id="FittingNo1" name="FittingNo"  placeholder="请输入切缝宽度" autocomplete="off" class="layui-input">
+        </div>
+        <label class="layui-form-label1">
+            最小余料:</label>
+        <div class="layui-inline layui-show-xs-block">
+            <input type="text" id="Material1" name="Material"  placeholder="请输入最小余料" autocomplete="off" class="layui-input">
+        </div>
+        <label class="layui-form-label1">
+            最小料长:</label>
+        <div class="layui-inline layui-show-xs-block">
+            <input type="text" id="BatchNo1" name="BatchNo"  placeholder="请输入最小料长" autocomplete="off" class="layui-input">
+        </div>
+        <div class="layui-inline layui-show-xs-block">
+<!--            <button type="button" class="layui-btn" id="test31"><i class="layui-icon"></i>读取弯曲工艺数据库</button>-->
+            <button class="layui-btn"  lay-submit="" lay-filter="sreach"><i class="layui-icon">转换计算</i></button>
+        </div>
+    </form>
+</div>
+<div class="layui-fluid">
+    <div class="layui-row layui-col-space15">
+        <div class="layui-col-md12">
+            <div class="layui-card">
+                <div class="layui-card-body " style="line-height: unset"> 管件下料明细 </div>
+                <div class="layui-card-header">
+                    <button class="layui-btn layui-btn-danger" onclick="delAllBlanking()"><i class="layui-icon"></i>清空</button>
+                    <button class="layui-btn" onclick="xadmin.open('添加管件下料参数','./parameter-add.html',600,400)"><i class="layui-icon"></i>添加</button>
+                    <button type="button" class="layui-btn" id="test4"><i class="layui-icon"></i>导入</button>
+<!--                    <button type="button" class="layui-btn"  lay-submit="" lay-filter = "daochu" id="test1"><i class="layui-icon"></i>导出</button>-->
+                    <!-- <button class="layui-btn" onclick="xadmin.open('添加用户','./member-add.html',600,400)"><i class="layui-icon"></i>添加</button>-->
+                </div>
+                <div class="layui-card-body layui-table-body layui-table-main">
+                    <table class="layui-table layui-form" style="" id ="tabledaochu">
+                        <thead>
+                        <tr>
+
+                            <th >管件号</th>
+                            <th >管件序号</th>
+                            <th >规格</th>
+                            <th >材质</th>
+                            <th >下料长度</th>
+                            <th >坡口</th>
+                            <th style="color: #005aff;">套料编号</th>
+                            <th style="color: #005aff;">套料时间</th>
+                            <th style="color: #005aff;">下坡设备</th>
+
+
+                        </tr>
+                        </thead>
+                        <tbody id="blankingList">
+                        <tr>
+
+                            <td>12-AD15-2</td>
+                            <td>1</td>
+                            <td>1000</td>
+                            <td>492</td>
+                            <td>492</td>
+                            <td></td>
+                            <td>90</td>
+                            <td>500</td>
+                            <td>40</td>
+
+                        </tr>
+
+                        </tbody>
+                    </table>
+
+                </div>
+
+            </div>
+            <div class="layui-card">
+                <div class="layui-card-body " style="line-height: unset"> 管材测长数据 </div>
+                <div class="layui-card-header">
+                    <button class="layui-btn layui-btn-danger" onclick="delAllLength ()"><i class="layui-icon"></i>清空</button>
+                    <button class="layui-btn" onclick="xadmin.open('添加管材测长参数','./parameter-add.html',600,400)"><i class="layui-icon"></i>添加</button>
+                    <button type="button" class="layui-btn" id="test41"><i class="layui-icon"></i>导入</button>
+                    <!--<button type="button" class="layui-btn"  lay-submit="" lay-filter = "daochu" id="test11"><i class="layui-icon"></i>导出</button>-->
+                    <!-- <button class="layui-btn" onclick="xadmin.open('添加用户','./member-add.html',600,400)"><i class="layui-icon"></i>添加</button>-->
+                </div>
+                <div class="layui-card-body layui-table-body layui-table-main">
+                    <table class="layui-table layui-form" style="" id ="">
+                        <thead>
+
+                        <tr>
+<!--                            <th>-->
+<!--                                                                <input type="checkbox" lay-filter="checkall" name="" lay-skin="primary">-->
+<!--                            </th>-->
+                            <th >管材编号</th>
+                            <th >规格</th>
+                            <th >材质</th>
+                            <th >炉批号</th>
+                            <th >料长</th>
+                            <th >根数</th>
+                            <th >优先级</th>
+                            <th style="color: #005aff;">使用根数</th>
+
+
+                        </tr>
+                        </thead>
+                        <tbody id="lengthList">
+                        <tr>
+                          <!--  <td>
+                                <input type="checkbox" name="id" value="1"   lay-skin="primary">
+                            </td>-->
+                            <td>12-AD15-2</td>
+                            <td>1</td>
+                            <td>1000</td>
+                            <td>492</td>
+                            <td>492</td>
+                            <td></td>
+                            <td>90</td>
+                            <td>500</td>
+
+                        </tr>
+
+                        </tbody>
+                    </table>
+
+                </div>
+
+            </div>
+        </div>
+    </div>
+
+
+    <div class="layui-row layui-col-space15">
+        <div class="layui-col-md12">
+            <div class="layui-card1">
+                <div class="layui-card-body " style="line-height: unset"> 管件套料明细 </div>
+                <div class="layui-card-header">
+                    测长管材共**根；套料使用XX根；管件下料明细记录共XX条，已套料**条，未套料**条。
+<!--                    <button type="button" class="layui-btn" id="test4"><i class="layui-icon"></i>导入</button>-->
+                   <button type="button" class="layui-btn"  lay-submit="" lay-filter = "daochu" id="test1" style="float: right"><i class="layui-icon"></i>导出</button>
+                    <!-- <button class="layui-btn" onclick="xadmin.open('添加用户','./member-add.html',600,400)"><i class="layui-icon"></i>添加</button>-->
+                </div>
+                <div class="layui-card-body layui-table-body layui-table-main">
+                    <table class="layui-table layui-form" style="" >
+                        <thead>
+                        <tr>
+
+                            <th style="color: #005aff;">下料设备</th>
+                            <th style="color: #005aff;">套料时间</th>
+                            <th style="color: #005aff;">套料编号</th>
+                            <th >规格</th>
+                            <th >材质</th>
+                            <th >炉批号</th>
+                            <th >料长</th>
+                            <th style="color: #005aff;">余料</th>
+                            <th style="color: #005aff;">利用率</th>
+                            <th >序号</th>
+                            <th >管件号</th>
+                            <th >管材序号</th>
+                            <th >下料长度</th>
+                            <th >坡口</th>
+                            <th >备注</th>
+
+                        </tr>
+                        </thead>
+                        <tbody id="esultList">
+                        <tr>
+
+                            <td>79</td>
+                            <td>2020-02-17 13：25</td>
+                            <td>2-2-1</td>
+                            <td>114*6</td>
+                            <td>20.3</td>
+                            <td>11-201812</td>
+                            <td>10000</td>
+                            <td>250</td>
+                            <td>97.5%</td>
+                            <td>1</td>
+                            <td>320-CO01-6</td>
+                            <td>1</td>
+                            <td>4000</td>
+                            <td></td>
+                            <td></td>
+
+                        </tr>
+
+                        </tbody>
+                    </table>
+
+                </div>
+
+            </div>
+
+        </div>
+    </div>
+
+    </div>
+</div>
+</body>
+<script>
+    layui.use(['laydate','upload','form','table'], function(){
+        var laydate = layui.laydate;
+        var  form = layui.form;
+        var upload = layui.upload;
+        var table = layui.table;
+
+        var dataBase = [];
+        var Alpha ;
+
+        var alldata = "";
+
+
+        console.log(zdryscuserdata.parameterdata);
+        form.on('submit(sreach)', function(data){
+            var inputMap ={};
+            var parameter ={};
+            for (var x=1;x<dataBase.length;x++){
+                var mapBase1 ={};
+                for (var i =1;i<dataBase[0].length;i++){
+                    mapBase1[dataBase[0][i]] =dataBase[x][i];
+                }
+                if(typeof(dataBase[x][Alpha]) != "undefined"){
+                    parameter[dataBase[x][Alpha]] =mapBase1;
+                }
+
+            }
+            var dataList = zdryscuserdata.parameterdata;
+            var numlist =[];//获取有多少个管件号
+            for(var i=0 ;i<dataList.length;i++){
+                numlist.push(dataList[i].pipeNumber);
+            }
+
+            for(var i=0 ;i<numlist.length;i++){
+                var map1 ={};
+                for(var x=0 ;x<dataList.length;x++){
+                    if(numlist[i]===dataList[x].pipeNumber){
+                        map1[dataList[x].serialNumber] = dataList[x];
+                    }
+                    inputMap[numlist[i]] = map1;
+
+
+                }
+            }
+            // console.log(inputMap);
+            // console.log(zdryscuserdata.parameterdata);
+            // console.log(parameter);
+            getEndValue(inputMap,parameter);
+
+            return false;
+        });
+
+
+
+        form.on('submit(daochu)', function(data){
+            console.log("导出的方法中")
+            console.log(alldata);
+
+            var list1 =[];
+            list1.push(['管件号','序号','身长','起湾点','直管段','转角','曲角','湾模','预转角','初始角','法兰减量','身长','起湾点','直管段','转角','曲角','湾模','预转角','初始角','法兰减量','下料长度']);
+            for(var key in alldata) {
+                console.log(alldata[key]);
+                for(var i in alldata[key] ){
+                    console.log(alldata[key][i]);
+                    var list = [];
+                    list.push(alldata[key][i].pipeNumber);
+                    list.push(alldata[key][i].serialNumber);
+                    list.push(alldata[key][i].length);
+                    list.push(alldata[key][i].bendingpoint);
+                    list.push(alldata[key][i].straightpipesection);
+                    list.push(alldata[key][i].corner);
+                    list.push(alldata[key][i].alpha);
+                    list.push(alldata[key][i].xory);
+                    list.push(alldata[key][i].zzz);
+                    list.push(alldata[key][i].initialAngle);
+                    list.push(alldata[key][i].flangeReduction);
+                    list.push(alldata[key][i].length);
+                    list.push(alldata[key][i].CorrectionOfStartingPoint);
+                    list.push(alldata[key][i].CorrectionOfStraightPipeSection);
+                    list.push(alldata[key][i].corner);
+                    list.push(alldata[key][i].alpha);
+                    list.push(alldata[key][i].xory);
+                    list.push(alldata[key][i].zzz);
+                    list.push(alldata[key][i].initialAngle);
+                    list.push(alldata[key][i].flangeReduction);
+                    list.push(alldata[key][i].BlankingLength);
+                    list1.push(list);
+                }
+            }
+            console.log(list1)
+            var listx =[];
+            listx.push(list1)
+            console.log(listx)
+
+
+            // table.exportFile(['管件','管件','原始','原始','原始','原始','原始','原始','原始','原始','原始','修正','修正','修正','修正','修正','修正','修正','修正','修正','修正'],
+            //     list1, 'csv');
+            table.exportFile(['管件','','原始工艺参数','','','','','','','','','修正工艺参数','','','','','','','','',''],
+                list1, 'csv');
+            return false;
+        });
+
+        upload.render({
+            elem: '#test3'
+            ,url: 'https://httpbin.org/post' //改成您自己的上传接口
+            ,accept: 'file' //普通文件
+            ,done: function(res){
+                layer.msg('上传成功');
+                var DeviceNo;
+                var FittingNo;
+                var Material;
+                var BatchNo;
+                var relArr = res.files.file.split("\r\n");
+                // console.log(relArr);
+                for(var key = 0; key < relArr.length; key++) {
+                    var values = relArr[key];
+                    var objArr = values.split(",");
+                    dataBase.push(objArr);
+                }
+                // 判断“表头所需内容”是csv中的第几个
+                for(var key = 0; key < dataBase[0].length; key++){
+                    if(dataBase[0][key]==="FittingNo"){
+                        FittingNo = key;
+                    }else if(dataBase[0][key]==="DeviceNo"){
+                        DeviceNo = key;
+                    }else if(dataBase[0][key]==="Material"){
+                        Material = key;
+                    }else if(dataBase[0][key]==="BatchNo"){
+                        BatchNo = key;
+                    }else if(dataBase[0][key]==="Alpha"){
+                        Alpha = key;
+                    }
+                }
+
+
+                for(var key=0; key < dataBase[1].length; key++){
+
+                    if(key===FittingNo){
+                        $("#FittingNo").val(dataBase[1][key])
+                    }else if(key===DeviceNo){
+                        $("#DeviceNo").val(dataBase[1][key])
+                    }else if(key===Material){
+                        $("#Material").val(dataBase[1][key])
+                    }else if(key===BatchNo){
+                        $("#BatchNo").val(dataBase[1][key])
+                    }
+                }
+            }
+        });
+
+
+        upload.render({
+            elem: '#test4'
+            ,url: 'https://httpbin.org/post' //改成您自己的上传接口
+            ,accept: 'file' //普通文件
+            ,done: function(res){
+                layer.msg('上传成功');
+                var dataBase = [];
+                var dataBase1 = [];
+                var relArr = res.files.file.split("\r\n");
+                // console.log(relArr);
+                for(var key = 0; key < relArr.length; key++) {
+                    var values = relArr[key];
+                    var objArr = values.split(",");
+                    if(objArr.length>0){
+                        dataBase.push(objArr);
+                    }
+                }
+                console.log(dataBase)
+                for (var i =1;i<dataBase.length;i++){
+                    var object123 = {};
+                    var key1 = (dataBase[0][0]).toString();
+
+
+                    for(var x =0;x<dataBase[i].length;x++){
+                        console.log(dataBase[0][0])
+                        if(x == 0){
+                            object123[key1]=dataBase[i][x];
+                        }
+                        object123[dataBase[0][x]]=dataBase[i][x];
+
+                    }
+                    if(object123.length>0){
+                        console.log(object123)
+                        if(!zdryscuserdata.hasOwnProperty("parameterdata")){
+                            zdryscuserdata.parameterdata=[];
+                        }
+                        zdryscuserdata.parameterdata.push(object123);
+                        sessionStorage.removeItem("zdryscuser");
+                        sessionStorage.setItem("zdryscuser",JSON.stringify(zdryscuserdata));
+                    }
+
+                }
+
+                showParameterList();
+            }
+        });
+
+
+
+
+
+
+
+
+
+        // 监听全选
+        form.on('checkbox(checkall)', function(data){
+
+            if(data.elem.checked){
+                $('tbody input').prop('checked',true);
+            }else{
+                $('tbody input').prop('checked',false);
+            }
+            form.render('checkbox');
+        });
+
+        //执行一个laydate实例
+        laydate.render({
+            elem: '#start' //指定元素
+        });
+
+        //执行一个laydate实例
+        laydate.render({
+            elem: '#end' //指定元素
+        });
+
+
+        showParameterList();
+        function showParameterList() {
+            var html;
+            if (zdryscuserdata.hasOwnProperty("parameterdata")){
+                var dataList = zdryscuserdata.parameterdata;
+                console.log(dataList);
+
+                for(var i=0 ;i<dataList.length;i++){
+                    html += '<tr> <td>  <input type="checkbox" name="id" value=' + dataList[i].pipeNumber + ' lay-skin="primary"> </td>' +
+                        '<td>'+dataList[i].pipeNumber+'</td>'+
+                        '<td>'+(i+1)+'</td>'+
+                        '<td>'+dataList[i].length+'</td>'+
+                        '<td>'+dataList[i].bendingpoint+'</td>'+
+                        '<td>'+dataList[i].straightpipesection+'</td>'+
+                        '<td>'+dataList[i].corner+'</td>'+
+                        '<td>'+dataList[i].alpha+'</td>'+
+                        '<td>'+dataList[i].xory+'</td>'+
+                        '<td>'+dataList[i].zzz+'</td>'+
+                        '<td>'+dataList[i].initialAngle+'</td>'+
+                        '<td>'+dataList[i].flangeReduction+'</td>';
+
+                }
+                $("#parameterlist").html(html);
+            }
+            // console.log("没有这个字段！！！");
+        }
+
+
+
+        function getEndValue(inputMap,parameter) {
+            $.ajax({
+                url : "api/calculation",
+                type : "post",
+                xhrFields : {
+                    withCredentials : true
+                },
+                data : JSON.stringify({
+                    inputMap : inputMap,
+                    parameter : parameter
+                }),
+                contentType : "application/json",
+                success : function (res) {
+                    console.log(res)
+                    var html = "";
+                    alldata =res;
+                    for(var key in res){
+                        for (var i in res[key]){
+                            html += '<tr> <td>  <input type="checkbox" name="id" value=' + res[key][i].pipeNumber + ' lay-skin="primary"> </td>' +
+                                '<td id="pipeNumber">'+res[key][i].pipeNumber+'</td>'+
+                                '<td>'+res[key][i].serialNumber+'</td>'+
+                                '<td>'+res[key][i].length+'</td>'+
+                                '<td>'+res[key][i].bendingpoint+'</td>'+
+                                '<td>'+res[key][i].straightpipesection+'</td>'+
+                                '<td>'+res[key][i].corner+'</td>'+
+                                '<td>'+res[key][i].alpha+'</td>'+
+                                '<td>'+res[key][i].xory+'</td>'+
+                                '<td>'+res[key][i].zzz+'</td>'+
+                                '<td>'+res[key][i].initialAngle+'</td>'+
+                                '<td>'+res[key][i].flangeReduction+'</td>'+
+                                '<td>'+res[key][i].length+'</td>'+
+                                '<td>'+res[key][i].CorrectionOfStartingPoint+'</td>'+
+                                '<td>'+res[key][i].CorrectionOfStraightPipeSection+'</td>'+
+                                '<td>'+res[key][i].corner+'</td>'+
+                                '<td>'+res[key][i].alpha+'</td>'+
+                                '<td>'+res[key][i].xory+'</td>'+
+                                '<td>'+res[key][i].zzz+'</td>'+
+                                '<td>'+res[key][i].initialAngle+'</td>'+
+                                '<td>'+res[key][i].flangeReduction+'</td>';
+                            if(typeof(res[key][i].BlankingLength) != "undefined"){
+                                html += '<td>'+res[key][i].BlankingLength+'</td>';
+                            }else {
+                                html += '<td></td>';
+                            }
+
+                        }
+                    }
+
+                    $("#parameterlist").html(html);
+
+                }
+            });
+
+        }
+
+
+    });
+
+    /*用户-停用*/
+    function member_stop(obj,id){
+        layer.confirm('确认要停用吗？',function(index){
+
+            if($(obj).attr('title')=='启用'){
+
+                //发异步把用户状态进行更改
+                $(obj).attr('title','停用')
+                $(obj).find('i').html('&#xe62f;');
+
+                $(obj).parents("tr").find(".td-status").find('span').addClass('layui-btn-disabled').html('已停用');
+                layer.msg('已停用!',{icon: 5,time:1000});
+
+            }else{
+                $(obj).attr('title','启用')
+                $(obj).find('i').html('&#xe601;');
+
+                $(obj).parents("tr").find(".td-status").find('span').removeClass('layui-btn-disabled').html('已启用');
+                layer.msg('已启用!',{icon: 5,time:1000});
+            }
+
+        });
+    }
+
+    /*用户-删除*/
+
+    function delAll (argument) {
+
+        layer.confirm('确认要删除吗？',function(index){
+            $("#parameterlist").html("");
+            zdryscuserdata.parameterdata=[];
+            sessionStorage.removeItem("zdryscuser");
+            sessionStorage.setItem("zdryscuser",JSON.stringify(zdryscuserdata));
+
+            layer.msg('已删除!',{icon:1,time:1000});
+        });
+    }
+</script>
+</html>

@@ -1,0 +1,17 @@
+server:
+  port: 8003
+spring:
+  mvc:
+    static-path-pattern: /**
+  resources:
+    static-locations: classpath:/META-INF/resources/,classpath:/resources/,
+      classpath:/X-admin/,classpath:/templates/,classpath:/public/,file:${web.upload-path}
+config:
+  email:
+
+logging:
+  level:
+    org: info
+
+web:
+  upload-path: /home/web/posite_cloud/upload

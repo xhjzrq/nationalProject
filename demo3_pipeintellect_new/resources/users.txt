@@ -1,0 +1,5 @@
+{"password":"usertest","phone":"13400001111","name":"测试-用户","company":"测试","department":"测试1","remarks":"暂无","username":"usertest"}
+{"password":"123123","phone":"13112345678","name":"李四123123","company":"测试ssssssss","department":"测试s","remarks":"测试dd","username":"test2"}
+{"password":"zxczxc","phone":"13112345678","name":"朱武","company":"测试","department":"测试","remarks":"测试","username":"test3"}
+{"password":"123123","phone":"13112345678","name":"李四123123","company":"测试ssssssss","department":"测试s","remarks":"测试dd","username":"test2222"}
+{"password":"admin","phone":"13112345678","name":"admin","company":"管理员","department":"管理员","remarks":"管理员","username":"admin"}
